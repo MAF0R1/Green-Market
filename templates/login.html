@@ -1,0 +1,363 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход - Маркет</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(145deg, #1a2a6c 0%, #2d4373 40%, #1a2a6c 100%);
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.3), transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.2), transparent),
+                radial-gradient(2px 2px at 50px 160px, rgba(255,255,255,0.3), transparent),
+                radial-gradient(2px 2px at 90px 40px, rgba(255,255,255,0.2), transparent),
+                radial-gradient(2px 2px at 130px 80px, rgba(255,255,255,0.3), transparent);
+            background-size: 200px 200px;
+            background-repeat: repeat;
+            opacity: 0.5;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .login-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            max-width: 440px;
+            padding: 45px 40px 40px;
+            border-radius: 28px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .login-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .login-icon {
+            font-size: 56px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .login-header h2 {
+            font-size: 30px;
+            font-weight: 800;
+            color: #1a2a6c;
+            margin: 0 0 4px 0;
+            letter-spacing: -0.5px;
+        }
+
+        .login-header .subtitle {
+            color: #6a7a8a;
+            font-size: 15px;
+            margin: 0;
+            font-weight: 400;
+        }
+
+        .decor-line {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(135deg, #4a7cf7, #2563eb);
+            border-radius: 4px;
+            margin: 16px auto 22px;
+        }
+
+        #message-box {
+            display: none;
+            margin-bottom: 18px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: left;
+        }
+
+        .message-error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .message-success {
+            background: #ecfdf5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+        }
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: #1a2a6c;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .input-group label .required {
+            color: #ef4444;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: #f5f7fb;
+            border-radius: 14px;
+            border: 2px solid #e8ecf2;
+            transition: all 0.3s ease;
+            padding: 2px 4px;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: #4a7cf7;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(74, 124, 247, 0.08);
+        }
+
+        .input-wrapper .input-icon {
+            padding: 12px 8px 12px 14px;
+            font-size: 18px;
+            color: #8a9aaa;
+            flex-shrink: 0;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 12px 16px 12px 4px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            background: transparent;
+            outline: none;
+            color: #1a2a4a;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .input-wrapper input::placeholder {
+            color: #aab5c5;
+            font-size: 15px;
+            font-weight: 400;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #4a7cf7, #2563eb);
+            color: #ffffff;
+            border: none;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            box-shadow: 0 6px 25px rgba(74, 124, 247, 0.25);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(74, 124, 247, 0.35);
+            background: linear-gradient(135deg, #5a8cff, #4a7cf7);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-hint {
+            margin-top: 16px;
+            font-size: 13px;
+            color: #8a9aaa;
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 30px 20px 28px;
+                border-radius: 20px;
+            }
+            .login-header h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="login-card">
+            <span class="login-icon">🔐</span>
+            <div class="login-header">
+                <h2>Вход в аккаунт</h2>
+                <p class="subtitle">Войдите или создайте профиль</p>
+            </div>
+            <div class="decor-line"></div>
+            <div id="message-box"></div>
+
+            <form id="loginForm" method="post">
+                {% csrf_token %}
+                <div class="input-group">
+                    <label for="loginName">👤 Имя <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="loginName" name="name" placeholder="Иван" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="loginSurname">👥 Фамилия</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">👥</span>
+                        <input type="text" id="loginSurname" name="surname" placeholder="Иванов">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="loginPhone">📱 Телефон <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">📱</span>
+                        <input type="tel" id="loginPhone" name="phone" placeholder="+7 912 345-67-89" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-login" id="loginBtn">Войти</button>
+            </form>
+            <div class="login-hint">🔒 Вход по номеру телефона. Имя запомнится для отзывов.</div>
+        </div>
+    </div>
+
+    <script>
+        const phoneInput = document.getElementById('loginPhone');
+        const nameInput = document.getElementById('loginName');
+        const surnameInput = document.getElementById('loginSurname');
+        const loginBtn = document.getElementById('loginBtn');
+        const messageBox = document.getElementById('message-box');
+
+        phoneInput.addEventListener('input', function(e) {
+            let digits = this.value.replace(/\D/g, '');
+            if (digits.length > 0 && digits[0] !== '7' && digits[0] !== '8') {
+                digits = '7' + digits;
+            }
+            if (digits.length > 0 && digits[0] === '8') {
+                digits = '7' + digits.slice(1);
+            }
+            if (digits.length > 11) {
+                digits = digits.slice(0, 11);
+            }
+            let formatted = '';
+            if (digits.length > 0) {
+                formatted = '+7';
+                if (digits.length > 1) {
+                    formatted += ' ' + digits.slice(1, 4);
+                    if (digits.length > 4) {
+                        formatted += ' ' + digits.slice(4, 7);
+                        if (digits.length > 7) {
+                            formatted += '-' + digits.slice(7, 9);
+                            if (digits.length > 9) {
+                                formatted += '-' + digits.slice(9, 11);
+                            }
+                        }
+                    }
+                }
+            }
+            this.value = formatted;
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = nameInput.value.trim();
+            const surname = surnameInput.value.trim();
+            const phone = phoneInput.value.replace(/\D/g, '');
+
+            if (!name) {
+                showMessage('⚠️ Пожалуйста, введите имя.', 'error');
+                nameInput.focus();
+                return;
+            }
+            if (phone.length < 11) {
+                showMessage('⚠️ Введите полный номер телефона (10 цифр после +7).', 'error');
+                phoneInput.focus();
+                return;
+            }
+
+            loginBtn.textContent = '⏳ Загрузка...';
+            loginBtn.disabled = true;
+
+            fetch('/login/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: new URLSearchParams({
+                    'name': name,
+                    'surname': surname,
+                    'phone': phone
+                })
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    return response.text();
+                }
+            })
+            .catch(() => {
+                showMessage('❌ Ошибка соединения. Попробуйте позже.', 'error');
+                loginBtn.textContent = 'Войти';
+                loginBtn.disabled = false;
+            });
+        });
+
+        function showMessage(text, type) {
+            messageBox.textContent = text;
+            messageBox.className = 'message-' + type;
+            messageBox.style.display = 'block';
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 4000);
+        }
+    </script>
+</body>
+</html>

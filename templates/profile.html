@@ -1,0 +1,286 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Профиль - Маркет{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ===== РАЗМЫТЫЙ ФОН ===== */
+    .profile-page {
+        max-width: 1100px;
+        margin: 40px auto;
+        padding: 0 20px;
+        position: relative;
+    }
+
+    .profile-page::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url("{% static 'images/123.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        filter: blur(8px) brightness(0.6);
+        z-index: -1;
+    }
+
+    /* ===== ЗАГОЛОВОК ===== */
+    .profile-header {
+        background: linear-gradient(135deg, #2563eb, #4a7cf7);
+        border-radius: 24px;
+        padding: 30px 40px;
+        color: white;
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        box-shadow: 0 10px 40px rgba(37, 99, 235, 0.3);
+    }
+
+    .profile-header .avatar {
+        width: 80px;
+        height: 80px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+    }
+
+    .profile-header .info h1 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 800;
+    }
+
+    .profile-header .info p {
+        margin: 5px 0 0;
+        font-size: 16px;
+        opacity: 0.9;
+    }
+
+    /* ===== СЕКЦИИ ===== */
+    .profile-section {
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(10px);
+        border-radius: 24px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .profile-section .section-title {
+        font-size: 22px;
+        font-weight: 800;
+        color: #1a2a6c;
+        margin-bottom: 15px;
+    }
+
+    .profile-section .section-title .icon {
+        margin-right: 8px;
+    }
+
+    /* ===== ЗАКАЗЫ ===== */
+    .order-card {
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 15px 20px;
+        margin-bottom: 10px;
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+    }
+
+    .order-card:hover {
+        border-color: #2563eb;
+        transform: translateY(-2px);
+    }
+
+    .order-card .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    .order-card .order-number {
+        font-weight: 700;
+        color: #1a2a6c;
+    }
+
+    .order-card .order-date {
+        font-size: 13px;
+        color: #6a7a8a;
+    }
+
+    .order-card .order-total {
+        font-size: 18px;
+        font-weight: 700;
+        color: #2563eb;
+    }
+
+    .no-orders {
+        text-align: center;
+        color: #9ca3af;
+        font-size: 16px;
+        padding: 30px 0;
+    }
+
+    /* ===== ОТЗЫВЫ ===== */
+    .review-card {
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 15px 20px;
+        margin-bottom: 10px;
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+    }
+
+    .review-card:hover {
+        border-color: #2563eb;
+    }
+
+    .review-card .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    .review-card .product-name {
+        font-weight: 700;
+        color: #1a2a6c;
+    }
+
+    .review-card .review-stars {
+        color: #fbbf24;
+        font-size: 18px;
+    }
+
+    .review-card .review-text {
+        font-size: 14px;
+        color: #4a3a2a;
+        margin: 5px 0 0;
+    }
+
+    .review-card .review-date {
+        font-size: 12px;
+        color: #9ca3af;
+        display: block;
+        margin-top: 8px;
+    }
+
+    .no-reviews {
+        text-align: center;
+        color: #9ca3af;
+        font-size: 16px;
+        padding: 30px 0;
+    }
+
+    /* ===== ВЫХОД ===== */
+    .logout-btn {
+        display: inline-block;
+        padding: 10px 24px;
+        background: #ef4444;
+        color: white;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        font-size: 14px;
+    }
+
+    .logout-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(239, 68, 68, 0.4);
+    }
+
+    /* ===== КНОПКА В ШАПКЕ (в углу) ===== */
+    .header-logout {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+
+    /* ===== АДАПТАЦИЯ ===== */
+    @media (max-width: 768px) {
+        .profile-header {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-page">
+    <!-- ===== ШАПКА ПРОФИЛЯ ===== -->
+    <div class="profile-header">
+        <div class="avatar">👤</div>
+        <div class="info">
+            <h1>{{ user.surname|default:"" }} {{ user.name|default:user.phone }}</h1>
+            <p>📱 {{ user.phone }}</p>
+            <p>📅 Регистрация: {{ user.created_at|date:"d.m.Y" }}</p>
+        </div>
+        <!-- Кнопка выхода в шапке -->
+        <div style="margin-left: auto;">
+            <a href="/logout/" class="logout-btn">🚪 Выйти</a>
+        </div>
+    </div>
+
+    <!-- ===== ИСТОРИЯ ПОКУПОК ===== -->
+    <div class="profile-section">
+        <h2 class="section-title"><span class="icon">🛍️</span>История покупок</h2>
+
+        {% if orders %}
+            {% for order in orders %}
+            <div class="order-card">
+                <div class="order-header">
+                    <span class="order-number">Заказ #{{ order.id }}</span>
+                    <span class="order-date">{{ order.created_at|date:"d.m.Y H:i" }}</span>
+                </div>
+                <div class="order-total">{{ order.total }} ₽</div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-orders">
+                <p>🛒 У вас пока нет покупок</p>
+                <p style="font-size: 14px; color: #6a7a8a;">Перейдите в каталог и выберите что-нибудь вкусное!</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- ===== МОИ ОТЗЫВЫ ===== -->
+    <div class="profile-section">
+        <h2 class="section-title"><span class="icon">💬</span>Мои отзывы</h2>
+
+        {% if reviews %}
+            {% for review in reviews %}
+            <div class="review-card">
+                <div class="review-header">
+                    <span class="product-name">{{ review.product.name }}</span>
+                    <span class="review-stars">
+                        {% for i in "12345"|make_list %}
+                            {% if forloop.counter <= review.rating %}★{% else %}<span style="color:#d1d5db;">☆</span>{% endif %}
+                        {% endfor %}
+                    </span>
+                </div>
+                <p class="review-text">{{ review.text }}</p>
+                <span class="review-date">{{ review.created_at|date:"d.m.Y H:i" }}</span>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-reviews">
+                <p>💬 У вас пока нет отзывов</p>
+                <p style="font-size: 14px; color: #6a7a8a;">Оставьте свой первый отзыв о товаре — это поможет другим покупателям!</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,868 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - Маркет{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ========================================= */
+    /* 1. ОСНОВНОЙ ФОН С РАЗМЫТИЕМ             */
+    /* ========================================= */
+    .product-page {
+        max-width: 1100px;
+        margin: 40px auto;
+        padding: 0 20px;
+        position: relative;
+    }
+
+    .product-page::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url("{% static 'images/123.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        filter: blur(8px) brightness(0.6);
+        z-index: -1;
+    }
+
+    /* ========================================= */
+    /* 2. КАРТОЧКА ТОВАРА                      */
+    /* ========================================= */
+    .product-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 50px;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(10px);
+        border-radius: 28px;
+        padding: 45px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        border: 1px solid rgba(255,255,255,0.1);
+        transition: box-shadow 0.3s ease;
+        margin-bottom: 40px;
+    }
+
+    .product-grid:hover {
+        box-shadow: 0 25px 70px rgba(0,0,0,0.25);
+    }
+
+    /* ========================================= */
+    /* 3. ХЛЕБНЫЕ КРОШКИ                       */
+    /* ========================================= */
+    .breadcrumbs {
+        font-size: 14px;
+        color: rgba(255,255,255,0.7);
+        margin-bottom: 30px;
+        padding: 12px 20px;
+        background: rgba(0,0,0,0.3);
+        backdrop-filter: blur(10px);
+        border-radius: 50px;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .breadcrumbs a {
+        color: #4a7cf7;
+        text-decoration: none;
+    }
+
+    .breadcrumbs a:hover {
+        text-decoration: underline;
+    }
+
+    .breadcrumbs span {
+        color: rgba(255,255,255,0.8);
+        font-weight: 500;
+    }
+
+    /* ========================================= */
+    /* 4. ЛЕВАЯ КОЛОНКА (КАРТИНКА)             */
+    /* ========================================= */
+    .product-image-wrapper {
+        background: rgba(255,255,255,0.5);
+        border-radius: 20px;
+        padding: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 400px;
+        border: 2px solid rgba(255,255,255,0.2);
+        transition: border-color 0.3s ease;
+    }
+
+    .product-image-wrapper:hover {
+        border-color: #4a7cf7;
+    }
+
+    .product-image-wrapper img {
+        max-width: 100%;
+        max-height: 500px;
+        object-fit: contain;
+        border-radius: 12px;
+        transition: transform 0.4s ease;
+    }
+
+    .product-image-wrapper img:hover {
+        transform: scale(1.03);
+    }
+
+    .product-image-wrapper .no-image {
+        font-size: 80px;
+        color: rgba(255,255,255,0.3);
+    }
+
+    /* ========================================= */
+    /* 5. ПРАВАЯ КОЛОНКА (ИНФО)                */
+    /* ========================================= */
+    .product-info {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .product-category {
+        display: inline-block;
+        background: rgba(255,255,255,0.2);
+        padding: 5px 18px;
+        border-radius: 50px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #4a7cf7;
+        width: fit-content;
+        letter-spacing: 0.3px;
+        border: 1px solid rgba(74, 124, 247, 0.2);
+    }
+
+    .product-name {
+        font-size: 36px;
+        font-weight: 800;
+        color: #ffffff;
+        margin: 0;
+        line-height: 1.2;
+        text-shadow: 0 2px 20px rgba(0,0,0,0.2);
+    }
+
+    .product-rating {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .product-rating .stars {
+        color: #fbbf24;
+        font-size: 22px;
+        letter-spacing: 2px;
+    }
+
+    .product-rating .stars .empty {
+        color: rgba(255,255,255,0.3);
+    }
+
+    .product-rating .rating-count {
+        color: rgba(255,255,255,0.6);
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .product-price {
+        font-size: 40px;
+        font-weight: 800;
+        color: #4a7cf7;
+        margin: 5px 0;
+    }
+
+    .product-price .old-price {
+        font-size: 22px;
+        color: rgba(255,255,255,0.3);
+        text-decoration: line-through;
+        font-weight: 400;
+        margin-left: 14px;
+    }
+
+    .product-description {
+        font-size: 16px;
+        line-height: 1.9;
+        color: rgba(255,255,255,0.85);
+        margin: 10px 0;
+        border-top: 2px solid rgba(255,255,255,0.1);
+        padding-top: 20px;
+    }
+
+    .product-description img {
+        max-width: 100%;
+        border-radius: 12px;
+        margin: 10px 0;
+    }
+
+    .product-description table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 15px 0;
+        font-size: 14px;
+    }
+
+    .product-description table td,
+    .product-description table th {
+        padding: 10px 15px;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .product-description table th {
+        background: rgba(255,255,255,0.05);
+        font-weight: 600;
+        text-align: left;
+    }
+
+    .product-description ul,
+    .product-description ol {
+        padding-left: 25px;
+    }
+
+    .product-description h2 {
+        color: #ffffff;
+        margin: 20px 0 10px;
+        font-size: 22px;
+    }
+
+    .product-description h3 {
+        color: #4a7cf7;
+        margin: 15px 0 8px;
+        font-size: 18px;
+    }
+
+    .product-description blockquote {
+        border-left: 4px solid #4a7cf7;
+        padding-left: 20px;
+        margin: 15px 0;
+        color: rgba(255,255,255,0.7);
+        font-style: italic;
+    }
+
+    /* ===== ХАРАКТЕРИСТИКИ ===== */
+    .product-specs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 16px;
+        padding: 18px 22px;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .product-specs .spec-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .product-specs .spec-item:last-child {
+        border-bottom: none;
+    }
+
+    .product-specs .spec-label {
+        color: rgba(255,255,255,0.5);
+        font-size: 14px;
+    }
+
+    .product-specs .spec-value {
+        font-weight: 600;
+        color: #ffffff;
+        font-size: 14px;
+    }
+
+    /* ===== КНОПКА В КОРЗИНУ ===== */
+    .btn-add-to-cart {
+        width: 100%;
+        padding: 18px;
+        background: linear-gradient(135deg, #4a7cf7, #2563eb);
+        color: #ffffff;
+        border: none;
+        border-radius: 16px;
+        font-size: 20px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 25px rgba(74, 124, 247, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 10px;
+    }
+
+    .btn-add-to-cart:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 40px rgba(74, 124, 247, 0.35);
+        background: linear-gradient(135deg, #5a8cff, #4a7cf7);
+    }
+
+    .btn-add-to-cart:active {
+        transform: scale(0.97);
+    }
+
+    /* ===== КНОПКА НАЗАД ===== */
+    .back-link {
+        display: inline-block;
+        margin-top: 30px;
+        color: #4a7cf7;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 15px;
+        padding: 10px 25px;
+        background: rgba(0,0,0,0.3);
+        backdrop-filter: blur(10px);
+        border-radius: 50px;
+        border: 1px solid rgba(255,255,255,0.1);
+        transition: all 0.3s ease;
+    }
+
+    .back-link:hover {
+        color: #5a8cff;
+        background: rgba(0,0,0,0.4);
+        text-decoration: underline;
+    }
+
+    /* ========================================= */
+    /* 6. ОТЗЫВЫ                                */
+    /* ========================================= */
+    .reviews-section {
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(10px);
+        border-radius: 28px;
+        padding: 35px 40px 40px;
+        border: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+
+    .reviews-section .section-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1a2a6c;
+        text-align: center;
+        margin-bottom: 4px;
+    }
+
+    .reviews-section .section-sub {
+        text-align: center;
+        color: #6a7a8a;
+        font-size: 14px;
+        margin-bottom: 22px;
+    }
+
+    .reviews-list {
+        max-height: 400px;
+        overflow-y: auto;
+        margin-bottom: 22px;
+        padding-right: 6px;
+    }
+
+    .reviews-list::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .reviews-list::-webkit-scrollbar-track {
+        background: rgba(0,0,0,0.03);
+        border-radius: 10px;
+    }
+
+    .reviews-list::-webkit-scrollbar-thumb {
+        background: #4a7cf7;
+        border-radius: 10px;
+    }
+
+    .review-item {
+        background: #f8fafc;
+        border-radius: 14px;
+        padding: 16px 20px;
+        margin-bottom: 12px;
+        border: 1px solid #eef2f6;
+        transition: all 0.3s ease;
+    }
+
+    .review-item:hover {
+        border-color: #4a7cf7;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(74, 124, 247, 0.06);
+    }
+
+    .review-item .review-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 4px;
+    }
+
+    .review-item .review-name {
+        font-weight: 700;
+        font-size: 15px;
+        color: #1a2a6c;
+    }
+
+    .review-item .review-stars {
+        color: #fbbf24;
+        font-size: 18px;
+        letter-spacing: 1px;
+    }
+
+    .review-item .review-stars .empty {
+        color: #d1d5db;
+    }
+
+    .review-item .review-text {
+        font-size: 14px;
+        line-height: 1.6;
+        color: #333;
+        margin: 4px 0 0;
+    }
+
+    .review-item .review-date {
+        font-size: 12px;
+        color: #9ca3af;
+        display: block;
+        margin-top: 4px;
+    }
+
+    .no-reviews {
+        text-align: center;
+        color: #9ca3af;
+        font-size: 15px;
+        padding: 20px 0;
+    }
+
+    /* ========================================= */
+    /* 7. ФОРМА ОТЗЫВА                         */
+    /* ========================================= */
+    .review-form {
+        border-top: 2px solid #eef2f6;
+        padding-top: 22px;
+    }
+
+    .review-form .form-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: #1a2a6c;
+        margin-bottom: 4px;
+        text-align: center;
+    }
+
+    .review-form .form-sub {
+        text-align: center;
+        color: #6a7a8a;
+        font-size: 13px;
+        margin-bottom: 16px;
+    }
+
+    .review-form .form-group {
+        margin-bottom: 14px;
+    }
+
+    .review-form .form-group label {
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        color: #1a2a6c;
+        margin-bottom: 4px;
+        letter-spacing: 0.3px;
+    }
+
+    .review-form .form-group label .required {
+        color: #ef4444;
+    }
+
+    .review-form .form-group input,
+    .review-form .form-group textarea,
+    .review-form .form-group select {
+        width: 100%;
+        padding: 11px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 14px;
+        font-size: 14px;
+        font-family: inherit;
+        outline: none;
+        transition: all 0.3s ease;
+        background: #fafbfc;
+        box-sizing: border-box;
+    }
+
+    .review-form .form-group input:focus,
+    .review-form .form-group textarea:focus,
+    .review-form .form-group select:focus {
+        border-color: #4a7cf7;
+        background: #ffffff;
+        box-shadow: 0 0 0 4px rgba(74, 124, 247, 0.06);
+    }
+
+    .review-form .form-group textarea {
+        min-height: 85px;
+        resize: vertical;
+    }
+
+    .review-form .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+    .review-form .submit-btn {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #4a7cf7, #2563eb);
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 25px rgba(74, 124, 247, 0.2);
+        letter-spacing: 0.5px;
+    }
+
+    .review-form .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 40px rgba(74, 124, 247, 0.3);
+        background: linear-gradient(135deg, #5a8cff, #4a7cf7);
+    }
+
+    .msg-success {
+        background: #ecfdf5;
+        border: 2px solid #34d399;
+        color: #065f46;
+        padding: 14px 18px;
+        border-radius: 14px;
+        text-align: center;
+        margin-bottom: 18px;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .msg-error {
+        background: #fef2f2;
+        border: 2px solid #f87171;
+        color: #991b1b;
+        padding: 14px 18px;
+        border-radius: 14px;
+        text-align: center;
+        margin-bottom: 18px;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .review-user-info {
+        color: #6a7a8a;
+        font-size: 13px;
+        text-align: center;
+        margin-top: 4px;
+    }
+
+    .review-user-info strong {
+        color: #1a2a6c;
+    }
+
+    /* ========================================= */
+    /* 8. АДАПТАЦИЯ                             */
+    /* ========================================= */
+    @media (max-width: 900px) {
+        .product-grid {
+            grid-template-columns: 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+        .product-image-wrapper {
+            min-height: 250px;
+        }
+        .product-name {
+            font-size: 28px;
+        }
+        .product-price {
+            font-size: 32px;
+        }
+        .product-specs {
+            grid-template-columns: 1fr;
+        }
+        .reviews-section {
+            padding: 25px 20px 30px;
+        }
+        .review-form .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .product-grid {
+            padding: 20px;
+            border-radius: 20px;
+        }
+        .product-name {
+            font-size: 24px;
+        }
+        .product-price {
+            font-size: 28px;
+        }
+        .btn-add-to-cart {
+            font-size: 17px;
+            padding: 15px;
+        }
+        .breadcrumbs {
+            font-size: 12px;
+            padding: 10px 16px;
+        }
+        .reviews-section {
+            padding: 20px 16px 24px;
+        }
+        .review-item {
+            padding: 14px 16px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="product-page">
+
+    <!-- ===== ХЛЕБНЫЕ КРОШКИ ===== -->
+    <div class="breadcrumbs">
+        <a href="/">Главная</a>
+        <span> / </span>
+        <a href="/catalog/">Каталог</a>
+        <span> / </span>
+        <span>{{ product.category.name }}</span>
+        <span> / </span>
+        <span>{{ product.name }}</span>
+    </div>
+
+    <!-- ===== ОСНОВНАЯ КАРТОЧКА ===== -->
+    <div class="product-grid">
+        <!-- ЛЕВАЯ КОЛОНКА: КАРТИНКА -->
+        <div class="product-image-wrapper">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+                <div class="no-image">📦</div>
+            {% endif %}
+        </div>
+
+        <!-- ПРАВАЯ КОЛОНКА: ИНФОРМАЦИЯ -->
+        <div class="product-info">
+            <span class="product-category">{{ product.category.name }}</span>
+            <h1 class="product-name">{{ product.name }}</h1>
+
+            <div class="product-rating">
+                <span class="stars">
+                    {% for i in "12345"|make_list %}
+                        {% if forloop.counter <= product.rating %}
+                            ★
+                        {% else %}
+                            <span class="empty">☆</span>
+                        {% endif %}
+                    {% endfor %}
+                </span>
+                <span class="rating-count">({{ product.hit_score|default:0 }} просмотров)</span>
+            </div>
+
+            <div class="product-price">
+                {{ product.price }} ₽
+                <span class="old-price">{{ product.price|add:30 }} ₽</span>
+            </div>
+
+            <div class="product-specs">
+                <div class="spec-item">
+                    <span class="spec-label">📦 Категория</span>
+                    <span class="spec-value">{{ product.category.name }}</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">⭐ Популярность</span>
+                    <span class="spec-value">{{ product.hit_score|default:0 }} просмотров</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">📅 Артикул</span>
+                    <span class="spec-value">#{{ product.id|stringformat:"06d" }}</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">🔄 В наличии</span>
+                    <span class="spec-value" style="color:#22c55e;">✅ Есть в наличии</span>
+                </div>
+            </div>
+
+            <div class="product-description">
+                {{ product.description|safe }}
+            </div>
+
+            <button class="btn-add-to-cart" onclick="addToCartDetail()">
+                🛒 Добавить в корзину
+            </button>
+        </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- ОТЗЫВЫ                                   -->
+    <!-- ========================================= -->
+    <div class="reviews-section">
+        <div class="section-title">💬 Отзывы</div>
+        <div class="section-sub">Что говорят покупатели о товаре</div>
+
+        <!-- Список отзывов -->
+        <div class="reviews-list">
+            {% if reviews %}
+                {% for review in reviews %}
+                <div class="review-item">
+                    <div class="review-header">
+                        <span class="review-name">
+                            {% if review.user %}
+                                {{ review.user.surname|default:"" }} {{ review.user.name|default:"" }}
+                            {% else %}
+                                {{ review.name|default:"Аноним" }}
+                            {% endif %}
+                        </span>
+                        <span class="review-stars">
+                            {% for i in "12345"|make_list %}
+                                {% if forloop.counter <= review.rating %}
+                                    ★
+                                {% else %}
+                                    <span class="empty">☆</span>
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                    </div>
+                    <p class="review-text">{{ review.text }}</p>
+                    <span class="review-date">{{ review.created_at|date:"d.m.Y H:i" }}</span>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-reviews">Пока нет отзывов. Будьте первым! 🌟</div>
+            {% endif %}
+        </div>
+
+        <!-- ===== ФОРМА ОТЗЫВА ===== -->
+        <div class="review-form">
+            <div class="form-title">✍️ Оставить отзыв</div>
+
+            {% if success %}
+            <div class="msg-success">{{ success }}</div>
+            {% endif %}
+
+            {% if error %}
+            <div class="msg-error">{{ error }}</div>
+            {% endif %}
+
+            {% if user %}
+            <div class="review-user-info">
+                👤 Вы авторизованы как <strong>{{ user.surname|default:"" }} {{ user.name|default:user.phone }}</strong>
+            </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="review_submit" value="1">
+
+                {% if not user %}
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reviewName">Имя <span class="required">*</span></label>
+                        <input type="text" id="reviewName" name="name" placeholder="Иван" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reviewSurname">Фамилия</label>
+                        <input type="text" id="reviewSurname" name="surname" placeholder="Иванов">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="reviewPhone">Телефон <span class="required">*</span></label>
+                    <input type="tel" id="reviewPhone" name="phone" placeholder="+7 912 345-67-89" required>
+                </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label for="reviewRating">Оценка</label>
+                    <select id="reviewRating" name="rating">
+                        <option value="5">⭐ 5 — Отлично</option>
+                        <option value="4">⭐ 4 — Хорошо</option>
+                        <option value="3">⭐ 3 — Нормально</option>
+                        <option value="2">⭐ 2 — Плохо</option>
+                        <option value="1">⭐ 1 — Ужасно</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="reviewText">Ваш отзыв <span class="required">*</span></label>
+                    <textarea id="reviewText" name="text" placeholder="Расскажите о вашем опыте..." required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">✉️ Отправить отзыв</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- КНОПКА НАЗАД -->
+    <a href="/catalog/" class="back-link">← Вернуться в каталог</a>
+</div>
+
+<script>
+    function addToCartDetail() {
+        const product = {
+            id: '{{ product.id }}',
+            name: '{{ product.name }}',
+            price: {{ product.price }},
+            image: '{% if product.image %}{{ product.image.url }}{% else %}📦{% endif %}',
+            quantity: 1
+        };
+
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const existing = cart.find(item => item.id === product.id);
+
+        if (existing) {
+            existing.quantity += 1;
+        } else {
+            cart.push(product);
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartBadge();
+
+        fetch(`/api/increment_hit/{{ product.id }}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                const ratingCount = document.querySelector('.rating-count');
+                if (ratingCount) {
+                    ratingCount.textContent = `(${data.new_score} просмотров)`;
+                }
+            }
+        })
+        .catch(e => console.log('Hit error', e));
+
+        const btn = document.querySelector('.btn-add-to-cart');
+        btn.textContent = '✅ Добавлено!';
+        btn.style.background = '#22c55e';
+        setTimeout(() => {
+            btn.textContent = '🛒 Добавить в корзину';
+            btn.style.background = '';
+        }, 2000);
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+{% endblock %}

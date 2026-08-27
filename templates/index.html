@@ -1,0 +1,417 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Главная - Маркет{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ===== ФОН ===== */
+    body {
+        background-image: url("{% static 'images/123.jpg' %}");
+        background-attachment: fixed;
+        background-size: cover;
+        background-position: center;
+    }
+
+    /* ========================================= */
+    /* 1. БАННЕР ПО ЦЕНТРУ (БОЛЬШОЙ, НО НЕ НА ВЕСЬ ЭКРАН) */
+    /* ========================================= */
+    .hero-banner {
+        max-width: 1100px;
+        margin: 20px auto 30px auto;
+        padding: 0 20px;
+        width: 100%;
+    }
+
+    .slides-wrapper {
+        position: relative;
+        width: 100%;
+        max-width: 1100px;
+        height: 380px;
+        margin: 0 auto;
+        border-radius: 28px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+
+    .slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 0.8s ease, transform 0.8s ease;
+        transform: scale(1.05);
+        padding: 40px 50px;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+    }
+
+    .slide.active {
+        opacity: 1;
+        transform: scale(1);
+        z-index: 2;
+    }
+
+    /* ===== СТИЛИ ДЛЯ КАЖДОГО СЛАЙДА ===== */
+    .slide-hit {
+        background: linear-gradient(135deg, #1a1a2e 0%, #2d1b2e 50%, #1a1a2e 100%);
+        border-bottom: 5px solid #e94560;
+    }
+    .slide-hit .badge { background: #e94560; }
+    .slide-hit h2 { color: #e94560; }
+    .slide-hit .btn-slide { background: #e94560; color: #fff; }
+    .slide-hit .btn-slide:hover { background: #c23152; transform: translateY(-3px); box-shadow: 0 8px 30px rgba(233,69,96,0.4); }
+
+    .slide-bestseller {
+        background: linear-gradient(135deg, #1a2a6c 0%, #2d1b4a 50%, #1a2a6c 100%);
+        border-bottom: 5px solid #f59e0b;
+    }
+    .slide-bestseller .badge { background: #f59e0b; color: #1a1a2e; }
+    .slide-bestseller h2 { color: #f59e0b; }
+    .slide-bestseller .btn-slide { background: #f59e0b; color: #1a1a2e; }
+    .slide-bestseller .btn-slide:hover { background: #d97706; transform: translateY(-3px); box-shadow: 0 8px 30px rgba(245,158,11,0.4); }
+
+    .slide-popular {
+        background: linear-gradient(135deg, #1a3a2e 0%, #1a2a3a 50%, #1a3a2e 100%);
+        border-bottom: 5px solid #22c55e;
+    }
+    .slide-popular .badge { background: #22c55e; color: #1a1a2e; }
+    .slide-popular h2 { color: #22c55e; }
+    .slide-popular .btn-slide { background: #22c55e; color: #1a1a2e; }
+    .slide-popular .btn-slide:hover { background: #16a34a; transform: translateY(-3px); box-shadow: 0 8px 30px rgba(34,197,94,0.4); }
+
+    .slide-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        gap: 40px;
+        color: #ffffff;
+    }
+
+    .slide-text {
+        flex: 1;
+    }
+
+    .slide-text .badge {
+        display: inline-block;
+        padding: 6px 22px;
+        border-radius: 50px;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 12px;
+    }
+
+    .slide-text h2 {
+        font-size: 40px;
+        font-weight: 800;
+        margin: 0 0 6px 0;
+        line-height: 1.2;
+    }
+
+    .slide-text .subtitle {
+        font-size: 18px;
+        opacity: 0.6;
+        font-weight: 400;
+        margin: 0 0 14px 0;
+    }
+
+    .slide-text .description {
+        font-size: 16px;
+        opacity: 0.85;
+        line-height: 1.7;
+        max-width: 520px;
+        margin: 0 0 22px 0;
+    }
+
+    .slide-text .description strong {
+        color: #ffffff;
+        opacity: 1;
+    }
+
+    .slide-text .btn-slide {
+        display: inline-block;
+        padding: 14px 38px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 16px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .slide-icon {
+        font-size: 90px;
+        flex-shrink: 0;
+        animation: floatIcon 3s ease-in-out infinite;
+        opacity: 0.5;
+    }
+
+    @keyframes floatIcon {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-15px) rotate(5deg); }
+    }
+
+    /* ===== ИНДИКАТОРЫ ===== */
+    .banner-dots {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 18px;
+    }
+    .banner-dots span {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.3);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+    .banner-dots span:hover {
+        background: rgba(255,255,255,0.5);
+        transform: scale(1.1);
+    }
+    .banner-dots span.active {
+        background: #2563eb;
+        border-color: #2563eb;
+        width: 32px;
+        border-radius: 10px;
+    }
+
+    /* ========================================= */
+    /* 2. ПРЕИМУЩЕСТВА                          */
+    /* ========================================= */
+    .features-container {
+        max-width: 1100px;
+        margin: 30px auto;
+        padding: 0 20px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+    }
+    .feature-card {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 20px;
+        flex: 1;
+        min-width: 230px;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    .feature-card h3 {
+        color: #2563eb;
+        margin-top: 0;
+        font-size: 18px;
+    }
+    .feature-card p {
+        color: #444;
+        font-size: 14px;
+        margin: 8px 0 0 0;
+    }
+
+    /* ========================================= */
+    /* 3. АДАПТАЦИЯ                             */
+    /* ========================================= */
+    @media (max-width: 768px) {
+        .slides-wrapper {
+            height: auto;
+            min-height: 380px;
+        }
+        .slide {
+            padding: 30px 25px;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .slide-content {
+            flex-direction: column;
+            text-align: center;
+            gap: 20px;
+        }
+        .slide-text h2 {
+            font-size: 28px;
+        }
+        .slide-text .description {
+            font-size: 15px;
+            max-width: 100%;
+        }
+        .slide-icon {
+            font-size: 60px;
+        }
+        .banner-dots span {
+            width: 10px;
+            height: 10px;
+        }
+        .banner-dots span.active {
+            width: 26px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .slides-wrapper {
+            min-height: 340px;
+        }
+        .slide {
+            padding: 20px;
+        }
+        .slide-text h2 {
+            font-size: 22px;
+        }
+        .slide-text .description {
+            font-size: 14px;
+        }
+        .slide-icon {
+            font-size: 45px;
+        }
+        .slide-text .btn-slide {
+            padding: 10px 25px;
+            font-size: 14px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero-banner">
+    <div class="slides-wrapper">
+
+        <div class="slide slide-hit active" data-index="0">
+            <div class="slide-content">
+                <div class="slide-text">
+                    <span class="badge">🔥 ХИТЫ ПРОДАЖ</span>
+                    <h2>Самые популярные</h2>
+                    <div class="subtitle">То, что покупают чаще всего</div>
+                    <p class="description">
+                        <strong>🔥 Хиты продаж</strong> — это товары, которые наши клиенты
+                        <strong>выбирают снова и снова</strong>. Тысячи покупок, сотни отзывов.
+                        Если товар в хитах — значит, он <strong>действительно хорош</strong>.
+                    </p>
+                    <a href="/catalog/?sort=popular" class="btn-slide">Смотреть хиты →</a>
+                </div>
+                <div class="slide-icon">🏆</div>
+            </div>
+        </div>
+
+        <div class="slide slide-bestseller" data-index="1">
+            <div class="slide-content">
+                <div class="slide-text">
+                    <span class="badge">⭐ БЕСТСЕЛЛЕРЫ</span>
+                    <h2>Наш выбор</h2>
+                    <div class="subtitle">Товары с отличным качеством</div>
+                    <p class="description">
+                        <strong>⭐ Бестселлеры</strong> — это товары, которые <strong>мы сами любим</strong>
+                        и рекомендуем вам. Мы проверили их качество, цену и отзывы.
+                        <strong>Проверено нашими экспертами</strong> — вы не разочаруетесь!
+                    </p>
+                    <a href="/catalog/?sort=-hit_score" class="btn-slide">Выбрать бестселлер →</a>
+                </div>
+                <div class="slide-icon">⭐</div>
+            </div>
+        </div>
+
+        <div class="slide slide-popular" data-index="2">
+            <div class="slide-content">
+                <div class="slide-text">
+                    <span class="badge">👍 ПОПУЛЯРНЫЕ</span>
+                    <h2>Выбор клиентов</h2>
+                    <div class="subtitle">То, что нравится покупателям</div>
+                    <p class="description">
+                        <strong>👍 Популярные</strong> — это товары, которые
+                        <strong>выбирают чаще других</strong>. Они не обязательно самые дешёвые
+                        или дорогие — они просто <strong>нравятся людям</strong>.
+                        Присоединяйтесь к большинству!
+                    </p>
+                    <a href="/catalog/" class="btn-slide">Смотреть популярное →</a>
+                </div>
+                <div class="slide-icon">👥</div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="banner-dots" id="bannerDots">
+        <span class="active" data-index="0"></span>
+        <span data-index="1"></span>
+        <span data-index="2"></span>
+    </div>
+</div>
+
+<div class="features-container">
+    <div class="feature-card">
+        <h3>🚚 Быстрая доставка</h3>
+        <p>Доставим продукты к вашему порогу в течение часа.</p>
+    </div>
+    <div class="feature-card">
+        <h3>🛒 Широкий ассортимент</h3>
+        <p>Более 1000 товаров: от хлеба до хозмелочей.</p>
+    </div>
+    <div class="feature-card">
+        <h3>💳 Удобная оплата</h3>
+        <p>Оплачивайте покупки картой, наличными или онлайн.</p>
+    </div>
+</div>
+
+<script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.banner-dots span');
+    let autoPlayInterval;
+
+    function showSlide(index) {
+        slides.forEach(s => s.classList.remove('active'));
+        dots.forEach(d => d.classList.remove('active'));
+        slides[index].classList.add('active');
+        dots[index].classList.add('active');
+        currentSlide = index;
+    }
+
+    function nextSlide() {
+        let next = (currentSlide + 1) % slides.length;
+        showSlide(next);
+    }
+
+    dots.forEach(dot => {
+        dot.addEventListener('click', function() {
+            const index = parseInt(this.dataset.index);
+            showSlide(index);
+            resetAutoPlay();
+        });
+    });
+
+    slides.forEach(slide => {
+        slide.addEventListener('click', function(e) {
+            if (!e.target.closest('.btn-slide')) {
+                nextSlide();
+                resetAutoPlay();
+            }
+        });
+    });
+
+    function startAutoPlay() {
+        autoPlayInterval = setInterval(nextSlide, 5000);
+    }
+
+    function resetAutoPlay() {
+        clearInterval(autoPlayInterval);
+        startAutoPlay();
+    }
+
+    startAutoPlay();
+
+    const banner = document.querySelector('.hero-banner');
+    banner.addEventListener('mouseenter', () => clearInterval(autoPlayInterval));
+    banner.addEventListener('mouseleave', () => startAutoPlay());
+</script>
+{% endblock %}

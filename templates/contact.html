@@ -1,0 +1,423 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Связь с оператором - Маркет{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ===== ФОН ===== */
+    body {
+        background-image: url("{% static 'images/123.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(10, 10, 30, 0.55);
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    /* ===== ОСНОВНОЙ КОНТЕНТ ===== */
+    .contact-wrapper {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        position: relative;
+        z-index: 1;
+        min-height: 500px;
+    }
+
+    .contact-container {
+        max-width: 520px;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    /* ===== КАРТОЧКА ===== */
+    .contact-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        padding: 40px 38px 45px;
+        border-radius: 28px;
+        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: transform 0.3s ease;
+    }
+
+    .contact-card:hover {
+        transform: translateY(-3px);
+    }
+
+    .contact-card .icon {
+        font-size: 50px;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .contact-card h1 {
+        color: #1a2a6c;
+        font-size: 28px;
+        font-weight: 800;
+        margin: 0 0 4px;
+        letter-spacing: -0.5px;
+    }
+
+    .contact-card .subtitle {
+        color: #5a6a8a;
+        font-size: 15px;
+        margin: 0 0 4px;
+        line-height: 1.6;
+    }
+
+    .contact-card .subtitle-email {
+        color: #4a7cf7;
+        font-size: 14px;
+        font-weight: 500;
+        margin: 0 0 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .contact-card .subtitle-email svg {
+        width: 18px;
+        height: 18px;
+        stroke: #4a7cf7;
+        stroke-width: 2;
+        fill: none;
+    }
+
+    .decor-line {
+        width: 50px;
+        height: 3px;
+        background: linear-gradient(135deg, #4a7cf7, #2563eb);
+        border-radius: 4px;
+        margin: 0 auto 16px;
+    }
+
+    .online-badge {
+        display: inline-block;
+        background: rgba(34, 197, 94, 0.12);
+        color: #22c55e;
+        padding: 4px 16px;
+        border-radius: 50px;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 18px;
+        border: 1px solid rgba(34, 197, 94, 0.15);
+    }
+
+    /* ===== ФОРМА ===== */
+    .form-group {
+        margin-bottom: 16px;
+        text-align: left;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 12px;
+        font-weight: 700;
+        color: #1a2a6c;
+        margin-bottom: 5px;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+    }
+
+    .form-group label .required {
+        color: #ef4444;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid rgba(26, 42, 108, 0.08);
+        border-radius: 12px;
+        font-size: 15px;
+        font-family: inherit;
+        box-sizing: border-box;
+        outline: none;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.6);
+        color: #1a1a2e;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+        border-color: #4a7cf7;
+        background: #ffffff;
+        box-shadow: 0 0 0 4px rgba(74, 124, 247, 0.08);
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+        color: #9aabba;
+    }
+
+    .form-group textarea {
+        min-height: 110px;
+        resize: vertical;
+    }
+
+    /* ===== КНОПКА ===== */
+    .submit-btn {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #4a7cf7, #2563eb);
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 25px rgba(74, 124, 247, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 4px;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 40px rgba(74, 124, 247, 0.35);
+        background: linear-gradient(135deg, #5a8cff, #4a7cf7);
+    }
+
+    .submit-btn:active {
+        transform: scale(0.97);
+    }
+
+    .submit-btn svg {
+        width: 20px;
+        height: 20px;
+        fill: currentColor;
+    }
+
+    /* ===== УСПЕХ ===== */
+    #success-message {
+        display: none;
+        background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+        border: 2px solid #34d399;
+        padding: 25px 20px;
+        border-radius: 18px;
+        margin-bottom: 20px;
+        animation: fadeInUp 0.5s ease;
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    #success-message .success-icon {
+        font-size: 44px;
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    #success-message h2 {
+        color: #065f46;
+        font-size: 20px;
+        margin: 0 0 4px;
+        font-weight: 700;
+    }
+
+    #success-message p {
+        color: #374151;
+        font-size: 14px;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    /* ========================================= */
+    /* АДАПТАЦИЯ                                */
+    /* ========================================= */
+    @media (max-width: 480px) {
+        .contact-card {
+            padding: 28px 20px 32px;
+            border-radius: 20px;
+        }
+
+        .contact-card h1 {
+            font-size: 22px;
+        }
+
+        .contact-card .subtitle {
+            font-size: 14px;
+        }
+
+        .contact-card .subtitle-email {
+            font-size: 13px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            font-size: 14px;
+            padding: 11px 14px;
+        }
+
+        .form-group textarea {
+            min-height: 90px;
+        }
+
+        .submit-btn {
+            font-size: 15px;
+            padding: 13px;
+        }
+
+        .contact-wrapper {
+            padding: 20px 16px;
+            min-height: 400px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="contact-wrapper">
+    <div class="contact-container">
+        <div class="contact-card">
+
+            <span class="icon">💬</span>
+            <h1>Связь с оператором</h1>
+            <div class="decor-line"></div>
+
+            <p class="subtitle">
+                Оставьте заявку, и наши менеджеры <strong>свяжутся с вами</strong>
+                в ближайшее время.
+            </p>
+
+            <p class="subtitle-email">
+                <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                Напишут на указанную электронную почту
+            </p>
+
+            <span class="online-badge">🟢 Онлайн 24/7</span>
+
+            <div id="success-message">
+                <span class="success-icon">✅</span>
+                <h2>Готово!</h2>
+                <p>Мы получили ваше сообщение. Ответ придёт на вашу почту в ближайшее время.</p>
+            </div>
+
+            <div id="form-wrapper">
+                <div class="form-group">
+                    <label for="contactName">👤 Ваше имя <span class="required">*</span></label>
+                    <input type="text" id="contactName" placeholder="Иван Иванов">
+                </div>
+
+                <div class="form-group">
+                    <label for="contactEmail">📧 Ваш email <span class="required">*</span></label>
+                    <input type="email" id="contactEmail" placeholder="ivan@mail.ru">
+                </div>
+
+                <div class="form-group">
+                    <label for="supportMsg">✉️ Сообщение <span class="required">*</span></label>
+                    <textarea id="supportMsg" placeholder="Опишите ваш вопрос или идею..."></textarea>
+                </div>
+
+                <button class="submit-btn" onclick="sendSupportMessage()">
+                    <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                    Отправить
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || '';
+
+    function sendSupportMessage() {
+        const name = document.getElementById('contactName').value.trim();
+        const email = document.getElementById('contactEmail').value.trim();
+        const msg = document.getElementById('supportMsg').value.trim();
+
+        let hasError = false;
+
+        if (!name) {
+            const input = document.getElementById('contactName');
+            input.style.borderColor = '#ef4444';
+            input.style.boxShadow = '0 0 0 4px rgba(239,68,68,0.1)';
+            setTimeout(() => { input.style.borderColor = ''; input.style.boxShadow = ''; }, 2000);
+            hasError = true;
+        }
+
+        if (!email || !email.includes('@')) {
+            const input = document.getElementById('contactEmail');
+            input.style.borderColor = '#ef4444';
+            input.style.boxShadow = '0 0 0 4px rgba(239,68,68,0.1)';
+            setTimeout(() => { input.style.borderColor = ''; input.style.boxShadow = ''; }, 2000);
+            hasError = true;
+        }
+
+        if (!msg) {
+            const textarea = document.getElementById('supportMsg');
+            textarea.style.borderColor = '#ef4444';
+            textarea.style.boxShadow = '0 0 0 4px rgba(239,68,68,0.1)';
+            setTimeout(() => { textarea.style.borderColor = ''; textarea.style.boxShadow = ''; }, 2000);
+            hasError = true;
+        }
+
+        if (hasError) return;
+
+        const button = document.querySelector('.submit-btn');
+        button.textContent = '⏳ Отправка...';
+        button.disabled = true;
+
+        fetch('/api/support/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify({
+                name: name,
+                email: email,
+                message: msg
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                document.getElementById('form-wrapper').classList.add('hidden');
+                document.getElementById('success-message').style.display = 'block';
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 4000);
+            } else {
+                alert('❌ Ошибка при отправке. Попробуйте позже.');
+                button.textContent = 'Отправить';
+                button.disabled = false;
+            }
+        })
+        .catch(() => {
+            alert('❌ Ошибка соединения. Проверьте интернет.');
+            button.textContent = 'Отправить';
+            button.disabled = false;
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}О нас - Маркет{% endblock %}
+
+{% block extra_css %}
+<style>
+    .about-container {
+        max-width: 1100px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .promo-banner {
+        width: 100%;
+        max-height: 400px;
+        object-fit: cover;
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        margin-bottom: 40px;
+    }
+
+    .about-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: start;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+    }
+
+    .stat-block {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .stat-number {
+        font-size: 42px;
+        font-weight: 800;
+        color: #111;
+        line-height: 1.1;
+        margin-bottom: 8px;
+    }
+
+    .stat-label {
+        font-size: 15px;
+        color: #666;
+        line-height: 1.4;
+        max-width: 180px;
+    }
+
+    .about-text {
+        font-size: 16px;
+        line-height: 1.8;
+        color: #444;
+    }
+
+    .about-text p {
+        margin: 0 0 20px 0;
+    }
+
+    @media (max-width: 768px) {
+        .about-grid {
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+        .stats-grid {
+            gap: 20px;
+        }
+        .stat-number {
+            font-size: 32px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="about-container">
+    <img src="{% static 'images/123.jpg' %}" class="promo-banner" alt="Наш магазин">
+
+    <div class="about-grid">
+        <div class="stats-grid">
+            <div class="stat-block">
+                <span class="stat-number">1996 г.</span>
+                <span class="stat-label">основан торговый филиал на Кравченко</span>
+            </div>
+            <div class="stat-block">
+                <span class="stat-number">25+ лет</span>
+                <span class="stat-label">работаем для жителей нашего района</span>
+            </div>
+            <div class="stat-block">
+                <span class="stat-number">5000+</span>
+                <span class="stat-label">наименований товаров в каталоге ежедневно</span>
+            </div>
+            <div class="stat-block">
+                <span class="stat-number">100%</span>
+                <span class="stat-label">контроль качества и свежести продуктов</span>
+            </div>
+        </div>
+
+        <div class="about-text">
+            <p>
+                История торговой точки на улице Кравченко берёт своё начало в 1996 году, когда открылся первый розничный павильон для обеспечения местных жителей базовыми продуктами питания. В 2019 году нами была полностью переосмыслена концепция внутреннего пространства, запущен обновлённый торговый зал и расширен блок непродовольственных товаров.
+            </p>
+            <p>
+                В рамках масштабной программы модернизации мы полностью обновили торговое оборудование, установили современные холодильные системы и расширили линейку товаров общего спроса. Сегодня наш мини-маркет включает в себя специализированный отдел посуды, хозтовары повседневной необходимости, свежую бакалею, молочную и мясную продукцию от проверенных региональных поставщиков.
+            </p>
+            <p>
+                Мы ориентируемся на стандарты ведущих федеральных сетей, сохраняя при этом душевную атмосферу и персональный подход к каждому покупателю, живущему по соседству.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

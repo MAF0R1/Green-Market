@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Контакты - Маркет{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ===== ФОН С КАРТИНКОЙ ===== */
+    .contacts-page {
+        min-height: 100vh;
+        padding: 40px 20px 60px;
+        flex: 1;
+        position: relative;
+        background-image: url("{% static 'images/123.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        background-attachment: scroll;  /* УБРАЛИ fixed - это тяжело */
+    }
+
+    .contacts-page::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(10, 10, 30, 0.55);
+        z-index: 0;
+        /* УБРАЛИ backdrop-filter: blur(6px) - это тяжело */
+    }
+
+    .contacts-container {
+        max-width: 1100px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .contacts-header {
+        text-align: center;
+        margin-bottom: 45px;
+    }
+
+    .contacts-header h1 {
+        font-size: 38px;
+        font-weight: 800;
+        color: #ffffff;
+        margin: 0 0 6px;
+        letter-spacing: -1px;
+        text-shadow: 0 2px 20px rgba(0,0,0,0.2);
+    }
+
+    .contacts-header .decor-line {
+        width: 70px;
+        height: 4px;
+        background: linear-gradient(135deg, #4a7cf7, #2563eb);
+        border-radius: 4px;
+        margin: 0 auto 12px;
+    }
+
+    .contacts-header p {
+        color: rgba(255,255,255,0.7);
+        font-size: 17px;
+        margin: 0;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .contacts-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 45px;
+        align-items: start;
+        margin-bottom: 60px;
+    }
+
+    .contacts-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .contact-item {
+        background: rgba(255, 255, 255, 0.85);
+        padding: 20px 24px;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    .contact-item:hover {
+        transform: translateX(8px);
+        background: rgba(255, 255, 255, 0.95);
+        border-color: #4a7cf7;
+        box-shadow: 0 8px 35px rgba(74, 124, 247, 0.15);
+    }
+
+    .contact-item .icon {
+        font-size: 28px;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(74, 124, 247, 0.12);
+        border-radius: 14px;
+        flex-shrink: 0;
+    }
+
+    .contact-item .info strong {
+        display: block;
+        font-size: 13px;
+        font-weight: 700;
+        color: #1a2a6c;
+        letter-spacing: 0.3px;
+    }
+
+    .contact-item .info span {
+        font-size: 15px;
+        color: #3a4a5a;
+    }
+
+    .contact-item .info .highlight {
+        color: #4a7cf7;
+        font-weight: 600;
+    }
+
+    .shop-badge {
+        display: inline-block;
+        background: rgba(74, 124, 247, 0.12);
+        color: #4a7cf7;
+        padding: 6px 18px;
+        border-radius: 50px;
+        font-size: 13px;
+        font-weight: 600;
+        margin-top: 6px;
+        border: 1px solid rgba(74, 124, 247, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .shop-badge:hover {
+        background: rgba(74, 124, 247, 0.2);
+        transform: scale(1.02);
+    }
+
+    .working-hours {
+        font-size: 13px;
+        color: #6a7a8a;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .working-hours .dot {
+        width: 10px;
+        height: 10px;
+        background: #22c55e;
+        border-radius: 50%;
+        animation: pulse-dot 2s infinite;
+        box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+    }
+
+    @keyframes pulse-dot {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    @media (max-width: 900px) {
+        .contacts-grid {
+            grid-template-columns: 1fr;
+            gap: 35px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="contacts-page">
+    <div class="contacts-container">
+        <div class="contacts-header">
+            <h1>📞 Контакты</h1>
+            <div class="decor-line"></div>
+            <p>Всегда на связи — звоните, пишите, приезжайте! ✨</p>
+        </div>
+
+        <div class="contacts-grid">
+            <div class="contacts-list">
+                <div class="contact-item">
+                    <div class="icon">📍</div>
+                    <div class="info">
+                        <strong>Адрес</strong>
+                        <span>ул. Кравченко, дом 32/3</span>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <div class="icon">⏰</div>
+                    <div class="info">
+                        <strong>Режим работы</strong>
+                        <span>Ежедневно с 7:00 до 21:00</span>
+                        <div class="working-hours">
+                            <span class="dot"></span>
+                            Работаем сейчас
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <div class="icon">📞</div>
+                    <div class="info">
+                        <strong>Телефон</strong>
+                        <span class="highlight">+7 919 886-43-32</span>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <div class="icon">💳</div>
+                    <div class="info">
+                        <strong>Оплата</strong>
+                        <span>Наличные и банковские карты</span>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <div class="icon">✉️</div>
+                    <div class="info">
+                        <strong>Email</strong>
+                        <span class="highlight">info@tradinghouse.ru</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.85); border-radius: 20px; padding: 30px; text-align: center; border: 1px solid rgba(255,255,255,0.15);">
+                <div style="font-size: 60px; margin-bottom: 10px;">🗺️</div>
+                <h3 style="color: #1a2a6c; margin: 0 0 8px;">Мы здесь</h3>
+                <p style="color: #6a7a8a; font-size: 14px;">ул. Кравченко, дом 32/3</p>
+                <div style="width: 100%; height: 150px; background: rgba(0,0,0,0.05); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: #9ca3af; font-size: 14px; margin-top: 10px;">
+                    🗺️ Карта будет здесь
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
