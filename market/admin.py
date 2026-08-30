@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.http import HttpResponse
 from django.utils.html import format_html
-from .models import Category, Product, SupportMessage, Order, Review, User, PromoCode, RecommendedProduct
+from .models import Category, Product, SupportMessage, Order, Review, User, PromoCode, RecommendedProduct, UserPromoCode, Favorite, LoyaltyConfig
 from ckeditor.widgets import CKEditorWidget
 from django.db import models
 import csv
@@ -197,3 +197,20 @@ class RecommendedProductAdmin(admin.ModelAdmin):
     list_display = ['id', 'product', 'is_active']
     list_editable = ['is_active']
     search_fields = ['product__name']
+
+@admin.register(UserPromoCode)
+class UserPromoCodeAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'promo_code', 'expires_at', 'is_used', 'created_at']
+    list_editable = ['is_used']
+    list_filter = ['is_used', 'expires_at']
+    search_fields = ['user__phone', 'promo_code__code']
+
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'product', 'created_at']
+    search_fields = ['user__phone', 'product__name']
+
+@admin.register(LoyaltyConfig)
+class LoyaltyConfigAdmin(admin.ModelAdmin):
+    list_display = ['min_order_amount', 'promo_code_template', 'discount', 'validity_days', 'is_active']
+    list_editable = ['discount', 'validity_days', 'is_active']

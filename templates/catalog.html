@@ -427,6 +427,34 @@
         transform: scale(1.03);
     }
 
+    /* ===== КНОПКА ИЗБРАННОГО ===== */
+    .favorite-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: white;
+        border: none;
+        border-radius: 50%;
+        width: 35px;
+        height: 35px;
+        cursor: pointer;
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        transition: all 0.3s;
+        z-index: 6;
+    }
+    .favorite-btn:hover {
+        transform: scale(1.2);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+    .favorite-btn.active {
+        background: #ef4444;
+        color: white;
+    }
+
     .pagination-wrapper {
         display: flex;
         justify-content: center;
@@ -532,10 +560,33 @@
             <div class="sort-wrapper">
                 <label for="sortSelect">Сортировка:</label>
                 <select id="sortSelect" onchange="window.location.href=this.value">
-                    <option value="?sort=default" {% if current_sort == 'default' %}selected{% endif %}>По умолчанию</option>
-                    <option value="?sort=price" {% if current_sort == 'price' %}selected{% endif %}>Сначала дешёвые</option>
-                    <option value="?sort=-price" {% if current_sort == '-price' %}selected{% endif %}>Сначала дорогие</option>
-                    <option value="?sort=name" {% if current_sort == 'name' %}selected{% endif %}>По алфавиту (А-Я)</option>
+                    {% if current_category %}
+                        <option value="?sort=default&category={{ current_category }}"
+                                {% if current_sort == 'default' %}selected{% endif %}>По умолчанию
+                        </option>
+                        <option value="?sort=price&category={{ current_category }}"
+                                {% if current_sort == 'price' %}selected{% endif %}>Сначала дешёвые
+                        </option>
+                        <option value="?sort=-price&category={{ current_category }}"
+                                {% if current_sort == '-price' %}selected{% endif %}>Сначала дорогие
+                        </option>
+                        <option value="?sort=name&category={{ current_category }}"
+                                {% if current_sort == 'name' %}selected{% endif %}>По алфавиту (А-Я)
+                        </option>
+                    {% else %}
+                        <option value="?sort=default" {% if current_sort == 'default' %}selected{% endif %}>По
+                            умолчанию
+                        </option>
+                        <option value="?sort=price" {% if current_sort == 'price' %}selected{% endif %}>Сначала
+                            дешёвые
+                        </option>
+                        <option value="?sort=-price" {% if current_sort == '-price' %}selected{% endif %}>Сначала
+                            дорогие
+                        </option>
+                        <option value="?sort=name" {% if current_sort == 'name' %}selected{% endif %}>По алфавиту
+                            (А-Я)
+                        </option>
+                    {% endif %}
                 </select>
             </div>
         </div>
@@ -557,6 +608,10 @@
                 {% elif product.hit_score >= 5 %}
                     <div class="product-badge popular">👍 Популярный</div>
                 {% endif %}
+                <!-- ===== КНОПКА ИЗБРАННОГО ===== -->
+                <button class="favorite-btn" onclick="toggleFavorite(this, {{ product.id }})" title="В избранное">
+                    ♡
+                </button>
 
                 {% if product.image %}
                     <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img">
@@ -568,7 +623,6 @@
                 <a href="/catalog/{{ product.id }}/" class="product-title-link">
                     <div class="product-title">{{ product.name }}</div>
                 </a>
-
                 <div class="product-rating">
                     <span class="stars">
                         {% for i in "12345"|make_list %}
@@ -687,60 +741,35 @@
         })
         .catch(e => console.log('Hit counter error', e));
 
-        // Анимация
-        const rect = card.getBoundingClientRect();
-        const cartIcon = document.getElementById('cartLink').getBoundingClientRect();
-
-        const ghost = card.cloneNode(true);
-        ghost.style.position = 'fixed';
-        ghost.style.top = rect.top + 'px';
-        ghost.style.left = rect.left + 'px';
-        ghost.style.width = rect.width + 'px';
-        ghost.style.height = rect.height + 'px';
-        ghost.style.margin = '0';
-        ghost.style.transition = 'all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
-        ghost.style.zIndex = '9999';
-        ghost.style.pointerEvents = 'none';
-        ghost.style.opacity = '1';
-        document.body.appendChild(ghost);
-
-        card.style.transition = 'all 0.2s ease';
-        card.style.opacity = '0';
-
-        requestAnimationFrame(() => {
-            ghost.style.transform = 'scale(0.15)';
-            ghost.style.top = (cartIcon.top + cartIcon.height/2 - 10) + 'px';
-            ghost.style.left = (cartIcon.left + cartIcon.width/2 - 10) + 'px';
-            ghost.style.opacity = '0.7';
-        });
-
+        // Просто меняем текст кнопки
+        button.textContent = '✅ Добавлено';
+        button.style.background = '#22c55e';
         setTimeout(() => {
-            document.body.removeChild(ghost);
-            const flash = document.createElement('div');
-            flash.style.position = 'fixed';
-            flash.style.top = '0';
-            flash.style.left = '0';
-            flash.style.width = '100%';
-            flash.style.height = '100%';
-            flash.style.pointerEvents = 'none';
-            flash.style.zIndex = '9998';
-            flash.style.background = 'radial-gradient(circle at center, rgba(255, 215, 0, 0.4) 0%, transparent 70%)';
-            flash.style.opacity = '0';
-            flash.style.transition = 'opacity 0.5s ease';
-            document.body.appendChild(flash);
+            button.textContent = '🛒 В корзину';
+            button.style.background = '#2563eb';
+        }, 1500);
+    }
 
-            requestAnimationFrame(() => {
-                flash.style.opacity = '1';
-            });
-
-            setTimeout(() => {
-                flash.style.opacity = '0';
-                setTimeout(() => {
-                    document.body.removeChild(flash);
-                    card.style.opacity = '1';
-                }, 500);
-            }, 400);
-        }, 800);
+    // ===== ИЗБРАННОЕ =====
+    function toggleFavorite(btn, productId) {
+        fetch(`/api/favorite/${productId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                if (data.action === 'added') {
+                    btn.textContent = '❤️';
+                    btn.classList.add('active');
+                } else {
+                    btn.textContent = '♡';
+                    btn.classList.remove('active');
+                }
+            }
+        });
     }
 
     function updateCartBadge() {

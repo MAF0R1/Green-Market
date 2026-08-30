@@ -5,9 +5,8 @@
 
 {% block extra_css %}
 <style>
-    /* ===== РАЗМЫТЫЙ ФОН ===== */
     .profile-page {
-        max-width: 1100px;
+        max-width: 1200px;
         margin: 40px auto;
         padding: 0 20px;
         position: relative;
@@ -28,9 +27,9 @@
         z-index: -1;
     }
 
-    /* ===== ЗАГОЛОВОК ===== */
+    /* ===== ШАПКА ПРОФИЛЯ ===== */
     .profile-header {
-        background: linear-gradient(135deg, #2563eb, #4a7cf7);
+        background: linear-gradient(135deg, #1a2a6c, #2563eb, #4a7cf7);
         border-radius: 24px;
         padding: 30px 40px;
         color: white;
@@ -38,52 +37,181 @@
         display: flex;
         align-items: center;
         gap: 20px;
-        box-shadow: 0 10px 40px rgba(37, 99, 235, 0.3);
+        box-shadow: 0 15px 50px rgba(37, 99, 235, 0.4);
     }
 
     .profile-header .avatar {
-        width: 80px;
-        height: 80px;
-        background: white;
+        width: 90px;
+        height: 90px;
+        background: rgba(255,255,255,0.2);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 40px;
+        font-size: 45px;
+        border: 3px solid rgba(255,255,255,0.3);
     }
 
     .profile-header .info h1 {
         margin: 0;
-        font-size: 28px;
+        font-size: 30px;
         font-weight: 800;
     }
 
     .profile-header .info p {
         margin: 5px 0 0;
-        font-size: 16px;
+        font-size: 15px;
         opacity: 0.9;
     }
 
-    /* ===== СЕКЦИИ ===== */
+    /* ===== СЕТКА ПРОФИЛЯ ===== */
+    .profile-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+        margin-bottom: 30px;
+    }
+
     .profile-section {
-        background: rgba(255, 255, 255, 0.92);
+        background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(10px);
         border-radius: 24px;
         padding: 30px;
-        margin-bottom: 30px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
         border: 1px solid rgba(255,255,255,0.1);
     }
 
-    .profile-section .section-title {
-        font-size: 22px;
+    .profile-section h2 {
+        font-size: 20px;
         font-weight: 800;
         color: #1a2a6c;
-        margin-bottom: 15px;
+        margin-top: 0;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #e2e8f0;
+        padding-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
 
-    .profile-section .section-title .icon {
-        margin-right: 8px;
+    /* ===== ПРОМОКОДЫ ===== */
+    .promo-card {
+        background: linear-gradient(135deg, #f59e0b, #ef4444);
+        border-radius: 16px;
+        padding: 20px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        box-shadow: 0 8px 30px rgba(245, 158, 11, 0.3);
+    }
+
+    .promo-card .promo-code {
+        font-size: 24px;
+        font-weight: 800;
+    }
+
+    .promo-card .promo-discount {
+        font-size: 16px;
+        font-weight: 600;
+        opacity: 0.9;
+    }
+
+    .promo-card .promo-expires {
+        font-size: 13px;
+        color: rgba(255,255,255,0.8);
+        text-align: right;
+    }
+
+    .no-promos {
+        text-align: center;
+        color: #9ca3af;
+        font-size: 16px;
+        padding: 30px 0;
+    }
+
+    /* ===== ИЗБРАННОЕ ===== */
+    .favorites-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 15px;
+    }
+
+    .favorite-card {
+        background: white;
+        border-radius: 16px;
+        padding: 15px;
+        text-align: center;
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s;
+    }
+
+    .favorite-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        border-color: #2563eb;
+    }
+
+    .favorite-card img {
+        width: 100%;
+        height: 110px;
+        object-fit: contain;
+    }
+
+    .favorite-card .fav-name {
+        font-weight: 600;
+        font-size: 14px;
+        color: #1e293b;
+    }
+
+    .favorite-card .fav-price {
+        font-size: 16px;
+        font-weight: 800;
+        color: #2563eb;
+    }
+
+    .fav-add-btn {
+        width: 100%;
+        padding: 8px;
+        background: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+        margin-top: 8px;
+        transition: background 0.3s;
+    }
+
+    .fav-add-btn:hover {
+        background: #1d4ed8;
+    }
+
+    .fav-remove-btn {
+        width: 100%;
+        padding: 8px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+        margin-top: 5px;
+        transition: background 0.3s;
+    }
+
+    .fav-remove-btn:hover {
+        background: #dc2626;
+    }
+
+    .no-favorites {
+        text-align: center;
+        color: #9ca3af;
+        font-size: 16px;
+        padding: 30px 0;
     }
 
     /* ===== ЗАКАЗЫ ===== */
@@ -185,31 +313,28 @@
     /* ===== ВЫХОД ===== */
     .logout-btn {
         display: inline-block;
-        padding: 10px 24px;
-        background: #ef4444;
+        padding: 12px 30px;
+        background: linear-gradient(135deg, #ef4444, #dc2626);
         color: white;
         border-radius: 50px;
         text-decoration: none;
-        font-weight: 600;
+        font-weight: 700;
+        font-size: 15px;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
-        font-size: 14px;
+        box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+        margin-top: 20px;
     }
 
     .logout-btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 30px rgba(239, 68, 68, 0.4);
-    }
-
-    /* ===== КНОПКА В ШАПКЕ (в углу) ===== */
-    .header-logout {
-        position: absolute;
-        top: 20px;
-        right: 20px;
+        box-shadow: 0 10px 35px rgba(239, 68, 68, 0.4);
     }
 
     /* ===== АДАПТАЦИЯ ===== */
     @media (max-width: 768px) {
+        .profile-grid {
+            grid-template-columns: 1fr;
+        }
         .profile-header {
             flex-direction: column;
             text-align: center;
@@ -228,59 +353,163 @@
             <p>📱 {{ user.phone }}</p>
             <p>📅 Регистрация: {{ user.created_at|date:"d.m.Y" }}</p>
         </div>
-        <!-- Кнопка выхода в шапке -->
-        <div style="margin-left: auto;">
-            <a href="/logout/" class="logout-btn">🚪 Выйти</a>
+    </div>
+
+    <!-- ===== СЕТКА ПРОФИЛЯ ===== -->
+    <div class="profile-grid">
+
+        <!-- ===== МОИ ПРОМОКОДЫ ===== -->
+        <div class="profile-section">
+            <h2>🎁 Мои промокоды</h2>
+
+            {% if promos %}
+                {% for promo in promos %}
+                <div class="promo-card">
+                    <div>
+                        <div class="promo-code">{{ promo.promo_code.code }}</div>
+                        <div class="promo-discount">Скидка: {{ promo.promo_code.discount }}%</div>
+                    </div>
+                    <div class="promo-expires">
+                        ⏰ Осталось: {{ promo.expires_at|timeuntil }}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-promos">Промокодов пока нет</div>
+            {% endif %}
+        </div>
+
+        <!-- ===== МОИ ИЗБРАННЫЕ ТОВАРЫ ===== -->
+        <div class="profile-section">
+            <h2>❤️ Мои избранные товары</h2>
+
+            {% if favorites %}
+                <div class="favorites-grid">
+                    {% for fav in favorites %}
+                    <div class="favorite-card">
+                        {% if fav.product.image %}
+                            <img src="{{ fav.product.image.url }}" alt="{{ fav.product.name }}">
+                        {% else %}
+                            <div style="font-size:60px;">📦</div>
+                        {% endif %}
+                        <div class="fav-name">{{ fav.product.name }}</div>
+                        <div class="fav-price">{{ fav.product.price }} ₽</div>
+                        <button class="fav-add-btn" onclick="addToCartFromFavorite({{ fav.product.id }}, '{{ fav.product.name }}', {{ fav.product.price }}, '{% if fav.product.image %}{{ fav.product.image.url }}{% else %}📦{% endif %}')">В корзину</button>
+                        <button class="fav-remove-btn" onclick="removeFavorite({{ fav.product.id }})">Убрать</button>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-favorites">У вас пока нет избранных товаров</div>
+            {% endif %}
+        </div>
+
+        <!-- ===== МОИ ЗАКАЗЫ ===== -->
+        <div class="profile-section">
+            <h2>🛍️ Мои заказы</h2>
+
+            {% if orders %}
+                {% for order in orders %}
+                <div class="order-card">
+                    <div class="order-header">
+                        <span class="order-number">Заказ #{{ order.id }}</span>
+                        <span class="order-date">{{ order.created_at|date:"d.m.Y H:i" }}</span>
+                    </div>
+                    <div class="order-total">{{ order.total }} ₽</div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-orders">
+                    <p>🛒 У вас пока нет покупок</p>
+                    <p style="font-size: 14px; color: #6a7a8a;">Перейдите в каталог и выберите что-нибудь вкусное!</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- ===== МОИ ОТЗЫВЫ ===== -->
+        <div class="profile-section">
+            <h2>💬 Мои отзывы</h2>
+
+            {% if reviews %}
+                {% for review in reviews %}
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="product-name">{{ review.product.name }}</span>
+                        <span class="review-stars">
+                            {% for i in "12345"|make_list %}
+                                {% if forloop.counter <= review.rating %}★{% else %}<span style="color:#d1d5db;">☆</span>{% endif %}
+                            {% endfor %}
+                        </span>
+                    </div>
+                    <p class="review-text">{{ review.text }}</p>
+                    <span class="review-date">{{ review.created_at|date:"d.m.Y H:i" }}</span>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-reviews">
+                    <p>💬 У вас пока нет отзывов</p>
+                    <p style="font-size: 14px; color: #6a7a8a;">Оставьте свой первый отзыв о товаре — это поможет другим покупателям!</p>
+                </div>
+            {% endif %}
         </div>
     </div>
 
-    <!-- ===== ИСТОРИЯ ПОКУПОК ===== -->
-    <div class="profile-section">
-        <h2 class="section-title"><span class="icon">🛍️</span>История покупок</h2>
-
-        {% if orders %}
-            {% for order in orders %}
-            <div class="order-card">
-                <div class="order-header">
-                    <span class="order-number">Заказ #{{ order.id }}</span>
-                    <span class="order-date">{{ order.created_at|date:"d.m.Y H:i" }}</span>
-                </div>
-                <div class="order-total">{{ order.total }} ₽</div>
-            </div>
-            {% endfor %}
-        {% else %}
-            <div class="no-orders">
-                <p>🛒 У вас пока нет покупок</p>
-                <p style="font-size: 14px; color: #6a7a8a;">Перейдите в каталог и выберите что-нибудь вкусное!</p>
-            </div>
-        {% endif %}
-    </div>
-
-    <!-- ===== МОИ ОТЗЫВЫ ===== -->
-    <div class="profile-section">
-        <h2 class="section-title"><span class="icon">💬</span>Мои отзывы</h2>
-
-        {% if reviews %}
-            {% for review in reviews %}
-            <div class="review-card">
-                <div class="review-header">
-                    <span class="product-name">{{ review.product.name }}</span>
-                    <span class="review-stars">
-                        {% for i in "12345"|make_list %}
-                            {% if forloop.counter <= review.rating %}★{% else %}<span style="color:#d1d5db;">☆</span>{% endif %}
-                        {% endfor %}
-                    </span>
-                </div>
-                <p class="review-text">{{ review.text }}</p>
-                <span class="review-date">{{ review.created_at|date:"d.m.Y H:i" }}</span>
-            </div>
-            {% endfor %}
-        {% else %}
-            <div class="no-reviews">
-                <p>💬 У вас пока нет отзывов</p>
-                <p style="font-size: 14px; color: #6a7a8a;">Оставьте свой первый отзыв о товаре — это поможет другим покупателям!</p>
-            </div>
-        {% endif %}
+    <!-- ===== ВЫХОД ===== -->
+    <div style="text-align: center;">
+        <a href="/logout/" class="logout-btn">🚪 Выйти из аккаунта</a>
     </div>
 </div>
+
+<script>
+    // Добавить в корзину из избранного
+    function addToCartFromFavorite(id, name, price, image) {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const existing = cart.find(item => item.id == id);
+        if (existing) {
+            existing.quantity += 1;
+        } else {
+            cart.push({
+                id: id,
+                name: name,
+                price: price,
+                image: image,
+                quantity: 1
+            });
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartBadge();
+        alert('✅ Товар добавлен в корзину!');
+    }
+
+    // Удалить из избранного
+    function removeFavorite(productId) {
+        fetch(`/api/favorite/${productId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                window.location.reload();
+            }
+        });
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
 {% endblock %}

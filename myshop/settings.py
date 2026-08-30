@@ -22,11 +22,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'market',
     'ckeditor',
+    'corsheaders',  # ← ДОБАВЛЕНА
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # ← ДОБАВЛЕНА (рано, чем CommonMiddleware)
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -117,3 +119,26 @@ CACHES = {
         'LOCATION': 'unique-snowflake',
     }
 }
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # ← ДОБАВЛЕНА (порт React)
+]
+
+# =========================================
+# ЛОГИРОВАНИЕ SQL-ЗАПРОСОВ
+# =========================================
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'loggers': {
+#         'django.db.backends': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#         },
+#     },
+# }

@@ -115,3 +115,37 @@ class RecommendedProduct(models.Model):
         verbose_name_plural = "Рекомендуемые товары"
     def __str__(self):
         return self.product.name
+
+class UserPromoCode(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
+    promo_code = models.ForeignKey(PromoCode, on_delete=models.CASCADE, verbose_name="Промокод")
+    expires_at = models.DateTimeField(verbose_name="Истекает")
+    is_used = models.BooleanField(default=False, verbose_name="Использован")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Выдан")
+    class Meta:
+        verbose_name = "Промокод пользователя"
+        verbose_name_plural = "Промокоды пользователей"
+    def __str__(self):
+        return f"{self.user.phone} - {self.promo_code.code}"
+
+class Favorite(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Товар")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Добавлено")
+    class Meta:
+        verbose_name = "Избранное"
+        verbose_name_plural = "Избранное"
+    def __str__(self):
+        return f"{self.user.phone} - {self.product.name}"
+
+class LoyaltyConfig(models.Model):
+    min_order_amount = models.IntegerField(default=1000, verbose_name="Минимальная сумма")
+    promo_code_template = models.CharField(max_length=50, default='BONUS', verbose_name="Шаблон промокода")
+    discount = models.IntegerField(default=10, verbose_name="Скидка (%)")
+    validity_days = models.IntegerField(default=5, verbose_name="Срок действия (дней)")
+    is_active = models.BooleanField(default=True, verbose_name="Активна")
+    class Meta:
+        verbose_name = "Настройка лояльности"
+        verbose_name_plural = "Настройки лояльности"
+    def __str__(self):
+        return f"От {self.min_order_amount} ₽ → {self.discount}%"

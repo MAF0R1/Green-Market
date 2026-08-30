@@ -6,15 +6,21 @@ from django.core.paginator import Paginator
 from django.db.models import F, Avg
 import json
 import time
-from .models import Product, Category, SupportMessage, LoginAttempt, Order, Review, User, PromoCode, RecommendedProduct
+import random
+from datetime import timedelta
+from django.utils import timezone
+from .models import Product, Category, SupportMessage, LoginAttempt, Order, Review, User, PromoCode, RecommendedProduct, UserPromoCode, Favorite, LoyaltyConfig
 from .forms import OrderForm
 
 def index(request):
     return render(request, 'index.html')
 
 def catalog(request):
+    print(request.GET)
     category_id = request.GET.get('category')
+    print("category_id:", category_id)
     sort_by = request.GET.get('sort', 'default')
+    print("sort_by:", sort_by)
     page_number = request.GET.get('page', 1)
     cache_key = f'catalog_v2_{category_id}_{sort_by}_{page_number}'
     cached_data = cache.get(cache_key)
@@ -153,7 +159,9 @@ def profile(request):
     user = get_object_or_404(User, id=request.session['user_id'])
     reviews = Review.objects.filter(user=user).select_related('product').order_by('-created_at')
     orders = Order.objects.filter(user=user).order_by('-created_at')
-    return render(request, 'profile.html', {'user': user, 'reviews': reviews, 'orders': orders})
+    promos = UserPromoCode.objects.filter(user=user, is_used=False).select_related('promo_code')
+    favorites = Favorite.objects.filter(user=user).select_related('product')
+    return render(request, 'profile.html', {'user': user, 'reviews': reviews, 'orders': orders, 'promos': promos, 'favorites': favorites})
 
 def cart(request):
     recommendations = RecommendedProduct.objects.filter(is_active=True).select_related('product')[:6]
@@ -222,7 +230,36 @@ def create_order_api(request):
                 address=data.get('address', ''),
                 items=json.dumps(data.get('items'), ensure_ascii=False)
             )
+            # Проверяем лояльность
+            config = LoyaltyConfig.objects.first()
+            if config and config.is_active:
+                if total >= config.min_order_amount:
+                    promo = PromoCode.objects.create(
+                        code=f"{config.promo_code_template}{random.randint(100,999)}",
+                        discount=config.discount
+                    )
+                    UserPromoCode.objects.create(
+                        user=user,
+                        promo_code=promo,
+                        expires_at=timezone.now() + timedelta(days=config.validity_days)
+                    )
             return JsonResponse({'status': 'ok', 'final_total': final_total})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+    return JsonResponse({'status': 'error'}, status=400)
+
+@csrf_exempt
+def add_to_favorites(request, product_id):
+    if request.method == 'POST':
+        try:
+            user = User.objects.get(id=request.session['user_id'])
+            product = Product.objects.get(id=product_id)
+            favorite, created = Favorite.objects.get_or_create(user=user, product=product)
+            if created:
+                return JsonResponse({'status': 'ok', 'action': 'added'})
+            else:
+                favorite.delete()
+                return JsonResponse({'status': 'ok', 'action': 'removed'})
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)})
     return JsonResponse({'status': 'error'}, status=400)
@@ -254,6 +291,7 @@ def increment_hit_api(request, product_id):
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
     return JsonResponse({'status': 'error'}, status=400)
+
 @csrf_exempt
 def check_promo_api(request):
     if request.method == 'POST':
@@ -267,3 +305,8 @@ def check_promo_api(request):
         except:
             pass
     return JsonResponse({'valid': False})
+
+def api_products(request):
+    products = Product.objects.all()
+    data = [{'id': p.id, 'name': p.name, 'price': p.price} for p in products]
+    return JsonResponse(data, safe=False, json_dumps_params={'ensure_ascii': False})

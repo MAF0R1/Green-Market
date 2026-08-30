@@ -5,7 +5,8 @@ from django.conf.urls.static import static
 from market.views import (
     index, catalog, aboyt, contacts, login, cart, wholesale, wholesale_checkout,
     contact, support_api, login_api, create_order_api, checkout,
-    increment_hit_api, product_detail, logout, profile, check_promo_api
+    increment_hit_api, product_detail, logout, profile, check_promo_api,
+    api_products, add_to_favorites
 )
 
 urlpatterns = [
@@ -28,7 +29,9 @@ urlpatterns = [
     path('api/check_promo/', check_promo_api, name='check_promo_api'),
     path('checkout/', checkout, name='checkout'),
     path('api/increment_hit/<int:product_id>/', increment_hit_api, name='increment_hit'),
+    path('api/favorite/<int:product_id>/', add_to_favorites, name='add_to_favorites'),
     path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('api/products/', api_products, name='api_products'),
 ]
 
 if settings.DEBUG:
